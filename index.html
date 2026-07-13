@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MyyShop — What's New</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T8T33F8138"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-T8T33F8138');
+  function trackEvent(n,p){gtag('event',n,p);}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -250,6 +259,7 @@
       });
     },{threshold:0.25});
     document.querySelectorAll('.media.video video').forEach(function(v){vo.observe(v);});
+    window.__wnVideoObserver = vo; // 暴露给下面接数据库的脚本用,新插入的视频也能用上"只在可视范围内播放"
   }
 
   /* category filter */
@@ -265,10 +275,114 @@
   }
   document.querySelectorAll('.pill').forEach(function(p){
     p.addEventListener('click',function(){
+      var previousFilter = current;
       document.querySelectorAll('.pill').forEach(function(x){x.classList.remove('on');});
       p.classList.add('on'); current=p.getAttribute('data-filter'); runFilter();
+      trackEvent('wn_filter_click', { filter_value: current, previous_filter: previousFilter });
     });
   });
+  window.runFilter = runFilter; // 暴露给下面接数据库的脚本用,插入内容后要重新筛选一次
+})();
+</script>
+
+<!-- =============================================
+  接入内容后台数据库
+============================================= -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var SUPABASE_URL = 'https://vnjhzybdsxttmsmfwsku.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_5Ffo4fNgEMGpFFtLFkh9ug_dWObFB1g';
+  var client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function escapeText(str){
+    var d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  function formatDate(dateStr){
+    if (!dateStr) return '';
+    var d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function bindVideoProgressTracking(videoEl, item){
+    var fired = {};
+    videoEl.addEventListener('timeupdate', function(){
+      if (!videoEl.duration) return;
+      var percent = (videoEl.currentTime / videoEl.duration) * 100;
+      [25, 50, 75, 100].forEach(function(milestone){
+        if (percent >= milestone && !fired[milestone]) {
+          fired[milestone] = true;
+          trackEvent('wn_video_progress', {
+            content_id: item.id,
+            content_title: item.title || '',
+            percent: milestone
+          });
+        }
+      });
+    });
+  }
+
+  function renderWhatsNewFeed(items){
+    var container = document.querySelector('.feed .line');
+    if (!container) return;
+    container.innerHTML = '';
+
+    items.forEach(function(item){
+      var tags = item.tags || [];
+      var dataCat = tags.map(function(t){ return String(t).toLowerCase(); }).join(' ');
+
+      var tagsHtml = tags.map(function(t){
+        var isNew = String(t).toLowerCase() === 'new';
+        return '<span class="tag ' + (isNew ? 'new' : 'cat') + '">' + escapeText(isNew ? 'New' : t) + '</span>';
+      }).join('');
+
+      var mediaHtml = item.media_url
+        ? '<div class="media video"><video src="' + item.media_url + '" autoplay muted loop playsinline controls preload="metadata"></video></div>'
+        : '';
+
+      var article = document.createElement('article');
+      article.className = 'entry';
+      article.setAttribute('data-cat', dataCat);
+      article.innerHTML =
+        '<div class="card">' +
+          '<div class="meta">' +
+            '<span class="date">' + formatDate(item.published_at) + '</span>' +
+            tagsHtml +
+          '</div>' +
+          '<h3>' + escapeText(item.title) + '</h3>' +
+          '<div class="desc">' + (item.description || '') + '</div>' +
+          mediaHtml +
+        '</div>';
+      container.appendChild(article);
+
+      // 让"只在可视范围内播放视频"这个原有功能也覆盖到新插入的视频
+      var v = article.querySelector('.media.video video');
+      if (v && window.__wnVideoObserver) window.__wnVideoObserver.observe(v);
+      if (v) bindVideoProgressTracking(v, item);
+    });
+
+    if (typeof window.runFilter === 'function') window.runFilter();
+  }
+
+  async function loadWhatsNew(){
+    var result = await client
+      .from('content_items')
+      .select('*')
+      .eq('page_type', 'whats_new')
+      .eq('status', 'published')
+      .order('sort_order', { ascending: true });
+
+    if (result.error) {
+      console.error('加载What\'s New内容失败:', result.error);
+      return; // 失败时不动原有内容,避免页面变空白
+    }
+    renderWhatsNewFeed(result.data || []);
+  }
+
+  loadWhatsNew();
 })();
 </script>
 </body>
