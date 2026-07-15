@@ -23,7 +23,7 @@
   /* ============ MyyShop VI tokens ============ */
   :root{
     --g1:#26F247;--g2:#01E9CB;--grad:linear-gradient(115deg,#26F247 0%,#01E9CB 100%);
-    --ink:#272727; --green-900:#0B622D; --teal-700:#00796A; --sage:#919D8E;
+    --ink:#272727; --black:#242628; --green-900:#0B622D; --teal-700:#00796A; --sage:#919D8E;
     --paper:#F2EEE0; --mist:#EFF4ED; --mist2:#E3F1ED; --white:#fff; --nav-bg:#EFEFED;
     --display:"Cabinet Grotesk","Satoshi","Source Han Sans SC","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
     --body:"Satoshi","Source Han Sans SC","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
@@ -36,7 +36,7 @@
   a{text-decoration:none;color:inherit}
   img{display:block;max-width:100%}
   .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
-  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .grad-text{color:var(--green-900)}
   :focus-visible{outline:2px solid var(--teal-700);outline-offset:2px}
 
   /* ============ Nav — matched to Creator Academy ============ */
@@ -49,25 +49,26 @@
   .nav-links{display:flex;align-items:center;gap:2px;flex:1}
   .nav-link{font-size:14px;font-weight:500;color:var(--sage);padding:6px 12px;border-radius:6px;cursor:pointer;transition:color .15s,background .15s;white-space:nowrap}
   .nav-link:hover,.nav-link.active{color:var(--ink);background:rgba(39,39,39,.06)}
-  .nav-cta{margin-left:auto;background:var(--g1);color:var(--ink);font-size:13px;font-weight:700;padding:8px 20px;border-radius:24px;border:none;cursor:pointer;white-space:nowrap;transition:background .15s}
-  .nav-cta:hover{background:var(--g2)}
+  .nav-cta{margin-left:auto;background:var(--black);color:#fff;font-size:13px;font-weight:700;padding:8px 20px;border-radius:24px;border:none;cursor:pointer;white-space:nowrap;transition:background .15s}
+  .nav-cta:hover{background:#3a3d40}
 
   /* ============ Hero (simplified) ============ */
-  .hero{position:relative;background:var(--green-900);color:#fff;overflow:hidden}
+  .hero{position:relative;background:var(--mist);color:var(--black);overflow:hidden}
   .hero .inner{position:relative;z-index:1;padding-block:clamp(52px,7vw,84px)}
-  .eyebrow{display:inline-block;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--g2);margin-bottom:16px}
+  .eyebrow{display:inline-block;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-900);margin-bottom:16px}
   .hero h1{font-size:clamp(46px,8.5vw,96px);line-height:1}
-  .hero p.lede{margin-top:18px;max-width:42ch;font-size:clamp(16px,1.6vw,19px);color:rgba(255,255,255,.8);font-weight:500}
+  .hero p.lede{margin-top:18px;max-width:42ch;font-size:clamp(16px,1.6vw,19px);color:var(--sage);font-weight:500}
+  .hero .spark{position:absolute;z-index:0;width:52px;height:52px;top:8%;right:6%;opacity:.9}
 
   /* ============ Filter bar ============ */
-  .filters{position:sticky;top:56px;z-index:40;background:rgba(239,239,237,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(39,39,39,.08)}
+  .filters{position:sticky;top:56px;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(39,39,39,.08)}
   .filters .row{display:flex;align-items:center;gap:10px;padding-block:14px;flex-wrap:wrap}
   .pill{font-family:var(--body);font-weight:700;font-size:13.5px;border:1.5px solid rgba(39,39,39,.16);background:transparent;color:#444;border-radius:999px;padding:8px 16px;cursor:pointer;transition:.15s;white-space:nowrap}
   .pill:hover{border-color:var(--green-900);color:var(--green-900)}
   .pill.on{background:var(--green-900);border-color:var(--green-900);color:#fff}
 
   /* ============ Feed / timeline ============ */
-  .feed{padding-block:clamp(40px,6vw,68px)}
+  .feed{padding-block:clamp(40px,6vw,68px);background:#F3F3F3}
   .line{position:relative}
   .line::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--mist2),rgba(145,157,142,.25))}
   .entry{position:relative;padding-left:42px;margin-bottom:30px}
@@ -84,7 +85,7 @@
   .entry .desc + .media{margin-top:18px}
   .media{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(39,39,39,.1);aspect-ratio:16/9;background:var(--mist)}
   .media img{width:100%;height:100%;object-fit:cover}
-  .media.video{aspect-ratio:auto;border:none;background:var(--mist);display:flex;justify-content:center;align-items:center;padding:22px}
+  .media.video{aspect-ratio:auto;border:none;background:#F3F3F3;display:flex;justify-content:center;align-items:center;padding:22px}
   .media.video video{height:clamp(360px,58vh,560px);width:auto;max-width:100%;border-radius:18px;background:#000;box-shadow:0 16px 40px -16px rgba(0,0,0,.45)}
   .links{margin-top:16px}
   .links a{font-weight:700;font-size:14px;color:var(--green-900);display:inline-flex;align-items:center;gap:6px}
@@ -140,6 +141,11 @@
       <span class="eyebrow">MyyShop · Product Updates</span>
       <h1>What's <span class="grad-text">New</span></h1>
       <p class="lede">Every feature, improvement, and fix we ship for creators.</p>
+      <svg class="spark" viewBox="0 0 50 53" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="20.5" y="1" width="8" height="24" rx="2" fill="var(--g1)" transform="rotate(20 24.5 13)"/>
+        <rect x="20.5" y="26" width="8" height="24" rx="2" fill="var(--g1)" transform="rotate(-70 24.5 38)"/>
+        <rect x="18" y="16" width="6.5" height="18.5" rx="2" fill="var(--g1)" transform="rotate(-58 21.25 25.25)"/>
+      </svg>
     </div>
   </section>
 
