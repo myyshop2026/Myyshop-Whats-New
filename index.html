@@ -115,8 +115,20 @@
   .footer-legal a:hover{color:rgba(255,255,255,.7)}
 
   /* ============ Responsive ============ */
-  @media(max-width:860px){ .nav-links{display:none} .footer-top{grid-template-columns:1fr 1fr;gap:28px} }
-  @media(max-width:560px){ .footer-top{grid-template-columns:1fr} .footer-bottom{flex-direction:column;align-items:flex-start} }
+  @media(max-width:860px){ 
+    .nav-links{display:none} 
+    .footer-top{grid-template-columns:1fr 1fr;gap:28px}
+    .nav-logo-img{min-width:120px;flex-shrink:0}
+    .nav .row{gap:20px}
+    .nav-page-name{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  }
+  @media(max-width:560px){ 
+    .footer-top{grid-template-columns:1fr} 
+    .footer-bottom{flex-direction:column;align-items:flex-start}
+    .nav-logo-img{min-width:100px}
+    .nav .row{gap:15px}
+    .nav-page-name{font-size:13px;max-width:150px}
+  }
   @media(prefers-reduced-motion:reduce){ *{scroll-behavior:auto} }
 </style>
 </head>
